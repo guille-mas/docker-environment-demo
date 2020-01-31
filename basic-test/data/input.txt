@@ -1,0 +1,10 @@
+add 1234
+substract 1
+add 2.1
+divide 2
+multiply 3
+divide 1
+substract 234234234
+divide 333
+multiply -0.2287
+apply 5

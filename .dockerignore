@@ -1,0 +1,9 @@
+# The following files won't be added to Docker build context
+
+# Basic Test excluded files
+basic-test/*.pdf
+basic-test/*.md
+
+# Advanced Test excluded files
+advanced-test/*.pdf
+advanced-test/*.md

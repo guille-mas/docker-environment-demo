@@ -1,0 +1,5 @@
+add 77
+substract 3
+multiply 2
+divide 3
+apply 5

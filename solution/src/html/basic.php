@@ -9,9 +9,7 @@ require_once(__DIR__ . "/../calculator.php");
  */
 function get_result_from_file(string $filename): float {
     $operations = \Befeni\Basic\Calculator\parse_file($filename, $first_operand);
-    $result = array_reduce($operations, "\Befeni\Basic\Calculator\operate", $first_operand);
-    return $result;
+    return array_reduce($operations, "\Befeni\Basic\Calculator\operate", $first_operand);
 }
-
 
 print(json_encode(get_result_from_file("input.txt")));

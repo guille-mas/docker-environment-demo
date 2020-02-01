@@ -1,5 +1,5 @@
 {
-    "name": "guillermomaschwitz/basic-test",
+    "name": "guillermomaschwitz/befeni",
     "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^8"

@@ -1,9 +1,9 @@
 
 version: "3.7"
 services:
-  befeni_basic_server:
-    container_name: befeni_basic_server
-    image: befeni/basic-server:1-development
+  befeni_server:
+    container_name: befeni_server
+    image: befeni/server:1-development
     ports:
       - "80:80/tcp"
     volumes:

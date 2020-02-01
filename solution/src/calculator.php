@@ -39,12 +39,12 @@ function parse_file(string $filepath, &$first_operand): array {
     $operations = [];
     foreach(read_line_from_file($filepath) as $k => $line) {
         if($tmp[0] == 'apply') {
-            throw new \Error('no more lines allowed after "apply" at line ' . $k);
+            throw new \Exception('no more lines allowed after "apply" at line ' . $k);
         }
         $operations[] = $tmp = parse_operation($line);
     }
     if($tmp[0] != 'apply') {
-        throw new \Error('last line must start with "apply" at line ' . $k);
+        throw new \Exception('last line must start with "apply" at line ' . $k);
     }
     $first_operand = array_pop($operations)[1];
     return $operations;
@@ -57,9 +57,9 @@ function parse_file(string $filepath, &$first_operand): array {
 function parse_operation(string $line): array {
     $allowed_operators = ['add', 'substract', 'multiply', 'divide', 'apply'];
     $row = explode(" ", rtrim($line, "\n"));
-    if(count($row) !== 2) throw new \Error('invalid line');
-    if(!in_array($row[0], $allowed_operators)) throw new \Error('invalid operator. Expecting: '.implode(' , ', $allowed_operators). ' but got '.$row[0]);
-    if(!is_numeric($row[1])) throw new \Error('invalid operand, must be a number. Got '. $row[1].' instead');
+    if(count($row) !== 2) throw new \Exception('invalid line');
+    if(!in_array($row[0], $allowed_operators)) throw new \Exception('invalid operator. Expecting: '.implode(' , ', $allowed_operators). ' but got '.$row[0]);
+    if(!is_numeric($row[1])) throw new \Exception('invalid operand, must be a number. Got '. $row[1].' instead');
     $row[1] = floatval($row[1]);
     return $row;
 }

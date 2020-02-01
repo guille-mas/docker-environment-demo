@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80/tcp"
     volumes:
-      - ./src/server:/var/www
+      - ./src:/var/www
       - ./data:/var/tmp/calculator
     networks:
       net: {}

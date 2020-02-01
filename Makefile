@@ -5,6 +5,8 @@ build:
 	docker build -t befeni/server:1-development --target server-development ./solution
 
 start:
+	docker-compose -f ./solution/docker-compose.yml up --no-start
+	docker-compose -f ./solution/docker-compose.yml run befeni_server composer install
 	docker-compose -f ./solution/docker-compose.yml up
 
 # remove development environment container and docker images

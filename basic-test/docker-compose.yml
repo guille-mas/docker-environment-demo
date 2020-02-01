@@ -3,15 +3,12 @@ version: "3.7"
 services:
   befeni_basic_server:
     container_name: befeni_basic_server
-    image: php:7.4-apache
+    image: befeni/basic-server:1-development
     ports:
       - "80:80/tcp"
     volumes:
       - ./src/server:/var/www
       - ./data:/var/tmp/calculator
-  
-  #befeni_basic_client:
-
 
 networks:
   net:

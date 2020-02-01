@@ -1,0 +1,16 @@
+{
+    "name": "guillermomaschwitz/basic-test",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "license": "UNLICENSED",
+    "authors": [
+        {
+            "name": "Guillermo Maschwitz",
+            "email": "guilledevel@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

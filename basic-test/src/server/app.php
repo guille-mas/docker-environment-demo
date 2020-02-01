@@ -66,7 +66,7 @@ function parse_operation(string $line): array {
 
 
 /**
- * Function used to read one line at a time of an existing file
+ * Generator used to read one line at a time of an existing file
  */
 function read_line_from_file(string $filename): Generator {
     $file = fopen('/var/tmp/calculator/'.$filename, 'r');

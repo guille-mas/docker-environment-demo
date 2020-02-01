@@ -9,6 +9,8 @@ services:
     volumes:
       - ./src/server:/var/www
       - ./data:/var/tmp/calculator
+    networks:
+      net: {}
 
 networks:
   net:

@@ -15,7 +15,7 @@ require_once(__DIR__."/IDataMapper.interface.php");
  * 
  * We assume also that every Primary Key will be an integer named id
  */
-class AbstractRepository implements IDataMapper
+abstract class AbstractRepository implements IDataMapper
 {
 
     /**
@@ -32,7 +32,7 @@ class AbstractRepository implements IDataMapper
     /**
      * Maps a data row to a model class
      */
-    protected function mapRowToModel(array $row): object {
+    function mapRowToModel(array $row): object {
         $modelClass = $this->getModelClass();
         $obj = new $modelClass();
         foreach($row as $col => $value) {

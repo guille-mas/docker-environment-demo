@@ -17,11 +17,11 @@ clean:
 
 # run phpunit inside built image
 test:
-	docker run --rm befeni/server:1-development /var/www/vendor/bin/phpunit /var/www/tests
+	docker run -t --rm befeni/server:1-development /var/www/vendor/bin/phpunit --colors /var/www/tests
 
 # run phpunit on live container
 test-live:
-	docker-compose -f ./solution/docker-compose.yml run befeni_server /var/www/vendor/bin/phpunit /var/www/tests
+	docker-compose -f ./solution/docker-compose.yml run befeni_server /var/www/vendor/bin/phpunit --colors /var/www/tests
 
 run:
 	@read -p "Write a command to run inside your docker environment: " command; \

@@ -9,15 +9,18 @@ require_once(__DIR__."/IDataMapper.interface.php");
 /**
  * Base Model Repository
  * Support multiple IDataSourceAdapter
- * We assume each IDataSourceAdapter instance is a replica.
+ * We assume each IDataSourceAdapter instance its kind of a "replica".
  * This means every change to the model 
  * must be propagated to every registered source.
  * 
  * We assume also that every Primary Key will be an integer named id
+ * 
+ * Since we don't have a service container in place, 
+ * and because there must be a single entry point per Model Repository
+ * this class and every subclass is a Singleton
  */
 abstract class AbstractRepository implements IDataMapper
 {
-
     /**
      * Stores each instance of IDataSourceAdapter
      * indexed by IDataSourceAdapter::getId()
@@ -107,6 +110,10 @@ abstract class AbstractRepository implements IDataMapper
             }
         }
         return $row;
+    }
+
+    public function findAll(): array {
+        return count($this->dataSources) ? current($this->dataSource)->findAll() : [];
     }
 
     /**

@@ -27,12 +27,19 @@ class AbstractRepository implements IDataMapper
     /**
      * Return the class that represents the model
      */
-    abstract function getModelClass();
+    abstract function getModelClass(): string;
 
     /**
      * Maps a data row to a model class
      */
-    abstract protected function mapRowToModel(array $row): object;
+    protected function mapRowToModel(array $row): object {
+        $modelClass = $this->getModelClass();
+        $obj = new $modelClass();
+        foreach($row as $col => $value) {
+            $obj->{$col} = $value;
+        }
+        return $obj;
+    }
 
     /**
      * @see https://ocramius.github.io/blog/fast-php-object-to-array-conversion/

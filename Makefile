@@ -4,9 +4,12 @@ build:
 	docker build -t befeni/server:1 --target server-production ./solution
 	docker build -t befeni/server:1-development --target server-development ./solution
 
-start:
+# prepares a docker-compose environment to be used locally
+bootstrap:
 	docker-compose -f ./solution/docker-compose.yml up --no-start
 	docker-compose -f ./solution/docker-compose.yml run befeni_server composer install
+
+start: bootstrap
 	docker-compose -f ./solution/docker-compose.yml up
 
 # remove development environment container and docker images
@@ -19,8 +22,8 @@ clean:
 test:
 	docker run -t --rm befeni/server:1-development /var/www/vendor/bin/phpunit --colors /var/www/tests
 
-# run phpunit on live container
-test-live:
+# run phpunit with current code
+test-live: bootstrap
 	docker-compose -f ./solution/docker-compose.yml run befeni_server /var/www/vendor/bin/phpunit --colors /var/www/tests
 
 run:

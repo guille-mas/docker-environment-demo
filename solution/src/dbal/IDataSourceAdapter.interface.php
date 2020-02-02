@@ -29,24 +29,26 @@ interface IDataSourceAdapter
      * an array of every tuple that has coincident 
      * values for every given key
      */
-    function find(Array $keyValuePairs): array;
+    function find(string $collection, array $keyValuePairs): array;
 
     /**
      * Given an array, its implementation
      * must update an existing row
      * or create a new one
+     * 
+     * @return id of the persisted row
      */
-    function persist(Array $row): void;
+    function persist(string $collection, array $row): int;
 
     /**
      * Given an id value
      * should delete from the data store
      * the row with same primary key as $id
      */
-    function delete(int $id): void;
+    function delete(string $collection, int $id): void;
 
     /**
-     * Return all rows 
+     * Return all rows from a given collection
      */
-    function findAll(): array;
+    function findAll(string $collection): array;
 }

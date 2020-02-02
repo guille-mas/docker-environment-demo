@@ -1,6 +1,7 @@
 FROM php:7.4-apache AS server-production
 # copy source code into image
 COPY --chown=www-data:www-data ./src /var/www
+COPY --chown=www-data:www-data ./data /var/tmp/befeni
 # install composer and its required packages
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends curl git zip unzip && \

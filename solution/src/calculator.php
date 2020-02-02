@@ -69,7 +69,7 @@ function parse_operation(string $line): array {
  * Generator used to read one line at a time of an existing file
  */
 function read_line_from_file(string $filename): Generator {
-    $file = fopen('/var/tmp/calculator/'.$filename, 'r');
+    $file = fopen('/var/tmp/befeni/'.$filename, 'r');
     while (($line = fgets($file)) !== false) {
         yield $line;
     }

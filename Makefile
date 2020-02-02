@@ -22,9 +22,11 @@ clean:
 test:
 	docker run -t --rm befeni/server:1-development /var/www/vendor/bin/phpunit --colors /var/www/tests
 
-# run phpunit with current code
-test-live: bootstrap
+test-live-fast:
 	docker-compose -f ./solution/docker-compose.yml run befeni_server /var/www/vendor/bin/phpunit --colors /var/www/tests
+
+# run phpunit with current code
+test-live: bootstrap test-live-fast
 
 run:
 	@read -p "Write a command to run inside your docker environment: " command; \

@@ -78,7 +78,7 @@ abstract class AbstractRepository implements IDataMapper
 
     public function delete(int $idValue) {
         foreach($this->dataSources as $k => $ds) {
-            $ds->delete($idValue);
+            $ds->delete($this->getModelClass(), $idValue);
         }
     }
 

@@ -120,8 +120,21 @@ final class ShirtOrderRepositoryTest extends TestCase
         $this->assertEquals("foo", current($result)->waistSize);
     }
 
-    // public function testDeleteExisting(): void {}
+    public function testDeleteExisting(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        // reset
+        $repo->removeDataSource((new InMemoryDataSourceAdapter())->getId());
+        $repo->addDataSource(new InMemoryDataSourceAdapter());
+        $entity = $repo->create();
+        $entity->waistSize = "hola";
+        $repo->persist($entity);
 
-    // public function testDeleteNonExisting(): void {}
+        $result = $repo->findByWaistSize("hola");
+        $this->assertEquals(1, count($result));
+        $repo->delete(current($result)->id);
+        
+        $result = $repo->findByWaistSize("foo");
+        $this->assertEquals(0, count($result));
+    }
 
 }

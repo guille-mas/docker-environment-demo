@@ -113,10 +113,7 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
                 }
             }
             if($idxToDelete !== null) {
-                // delete row
-                unset($this->inMemoryDb[$collection][$idx]);
-                // re index collection
-                $this->inMemoryDb[$collection] = array_values($this->inMemoryDb[$collection]);
+                array_splice($this->inMemoryDb[$collection], $idx, 1);
             }
         }
     }

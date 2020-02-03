@@ -93,7 +93,7 @@ abstract class AbstractRepository implements IDataMapper
         }
         $row = $this->mapModelToRow($model);
         foreach ($this->dataSources as $k => $ds) {
-            $ds->persist($row);
+            $ds->persist($this->getModelClass(), $row);
         }
     }
 
@@ -124,8 +124,18 @@ abstract class AbstractRepository implements IDataMapper
         }, $rows);
     }
 
+    /**
+     * 
+     */
     public function findAll(): array {
-        return count($this->dataSources) ? current($this->dataSources)->findAll($this->getModelClass()) : [];
+        if(count($this->dataSources) === 0) {
+            return [];
+        } else {
+            $allRows = current($this->dataSources)->findAll($this->getModelClass());
+            return array_map(function ($item) {
+                return $this->mapRowToModel($item);
+            }, $allRows);
+        }
     }
 
     /**

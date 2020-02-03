@@ -46,7 +46,7 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
      */
     function find(string $collection, array $keyValuePairs): array {
         if(!isset($this->inMemoryDb[$collection])) {
-            throw new \Exception('collection not found');
+            throw new \Exception('table not found');
         }
         if(!count($keyValuePairs)) {
             throw new \Exception('A condition was expected to match against the data set. Empty array provided instead');
@@ -72,23 +72,23 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
      * or create a new one
      */
     function persist(string $collection, array $row): int {
-        $foundRows = $this->find($collection, $row);
-        if(count($foundRows)) {
-            if(count($foundRows) > 1) {
-                // duplicated rows with same id edge case
-                throw new \Exception('dude, I was not expecting to find two rows with the same Primary Key');
-            }
-            // return an existing row
-            return current($foundRows);
-        } else if(!is_array($this->inMemoryDb[$collection])) {
+        if (!is_array($this->inMemoryDb[$collection])) {
+            // if the "table" does not exist, lets create it
             $this->inMemoryDb[$collection] = [];
         }
-        // assign id to new row
-        if(!count($this->inMemoryDb)) {
+        $foundRows = $this->find($collection, $row);
+        
+        if(count($foundRows) === 1) {
+            // return the existing row
+            return current($foundRows);
+        } elseif (count($foundRows) > 1) {
+            // duplicated rows with same id edge case
+            throw new \Exception('dude, I was not expecting to find two rows with the same Primary Key');
+        } elseif(count($this->inMemoryDb) === 0) {
+            // assign id to first row
             $row['id'] = 1;
         } else {
-            $row['id'] = end($this->inMemoryDb)['id'];
-            $row['id']++;
+            $row['id'] = end($this->inMemoryDb)['id'] + 1;
         }
         // store the new row
         $this->inMemoryDb[$collection][] = $row;

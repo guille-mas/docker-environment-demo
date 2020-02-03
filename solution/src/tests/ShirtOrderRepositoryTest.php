@@ -38,7 +38,7 @@ final class ShirtOrderRepositoryTest extends TestCase
         $repo->addDataSource(new InMemoryDataSourceAdapter([$tableName => [$row]]));
         $results = $repo->findAll();
         $this->assertTrue(count($results) === 1, "result should contain one single element");
-        $this->assertEquals($results[0], $row);
+        $this->assertEquals($results[0], $entity);
     }
 
     public function testFind(): void
@@ -61,6 +61,7 @@ final class ShirtOrderRepositoryTest extends TestCase
     public function testPersistNew(): void {
         $repo = ShirtOrderRepository::getInstance();
         $entity = new ShirtOrder();
+        $repo->addDataSource(new InMemoryDataSourceAdapter());
         $entity->customerId = 222;
         $entity->fabricId = 333;
         $entity->collarSize = 20;

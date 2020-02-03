@@ -32,4 +32,5 @@ run:
 	@read -p "Write a command to run inside your docker environment: " command; \
 	docker-compose -f ./solution/docker-compose.yml run befeni_server sh -c "$$command"
 
-all: clean build test
+all: build test
+

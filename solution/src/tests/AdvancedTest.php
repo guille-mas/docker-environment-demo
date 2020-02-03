@@ -116,8 +116,8 @@ final class ShirtOrderRepositoryTest extends TestCase
         $entity = $result[0];
         $entity->waistSize = "foo";
         $repo->persist($entity);
-        $result = $repo->findById(1);
-        $this->assertEquals("foo", $result[0]->waistSize);
+        $result = $repo->findByWaistSize("foo");
+        $this->assertEquals("foo", current($result)->waistSize);
     }
 
     // public function testDeleteExisting(): void {}

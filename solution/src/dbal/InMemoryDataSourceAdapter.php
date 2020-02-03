@@ -83,7 +83,7 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
             return current($foundRows);
         } elseif (count($foundRows) > 1) {
             // duplicated rows with same id edge case
-            throw new \Exception('dude, I was not expecting to find two rows with the same Primary Key');
+            throw new \Exception('dude, I was not expecting to find two rows with the same Primary Key!');
         } elseif(count($this->inMemoryDb) === 0) {
             // assign id to first row
             $row['id'] = 1;
@@ -92,6 +92,8 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
         }
         // store the new row
         $this->inMemoryDb[$collection][] = $row;
+        // re index the collection
+        $this->inMemoryDb[$collection] = array_values($this->inMemoryDb[$collection]);
         // return the new row´s primary key
         return $row['id'];
     }

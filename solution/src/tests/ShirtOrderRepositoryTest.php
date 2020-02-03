@@ -69,25 +69,59 @@ final class ShirtOrderRepositoryTest extends TestCase
         $entity->chestSize = 75;
         $entity->waistSize = 70;
         $repo->persist($entity);
-        $rows = $repo->findAll();
-        $this->assertEquals(1, count($rows));
-        $this->assertEquals(1, $rows[0]->id);
+        $persistedEntities = $repo->findAll();
+        $this->assertEquals(1, count($persistedEntities));
+        $entity->id = 1;
+        $this->assertEquals($entity, $persistedEntities[0]);
     }
 
 
-    /*
+    public function testSuccessFindById(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $this->assertEquals(1, count($repo->findById(1)));
+    }
 
-    public function testUpdateExisting(): void {}
+    public function testSuccessFindByCustomerId(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $result = $repo->findByCustomerId(222);
+        $this->assertEquals(1, count($result));
+        $this->assertEquals(222, $result[0]->customerId);
+    }
 
-    public function testSuccessFindById(): void {}
+    public function testSuccessFindByFabricId(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $result = $repo->findByFabricId(333);
+        $this->assertEquals(1, count($result));
+        $this->assertEquals(333, $result[0]->fabricId);
+    }
 
-    public function testSuccessFindByCustomerId(): void {}
+    public function testEmptyFindById(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $result = $repo->findById(1);
+        $this->assertEquals(1, count($result));
+        $this->assertEquals(1, $result[0]->id);
+    }
 
-    public function testSuccessFindByFabricId(): void {}
+    public function testEmptyFindByWaistSize(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $result = $repo->findByWaistSize(70);
+        $this->assertEquals(1, count($result));
+        $this->assertEquals(70, $result[0]->waistSize);
+    }
 
-    public function testEmptyFindById(): void {}
 
-    public function testEmptyFindByWaistSize(): void {}
-    */
+    public function testUpdateExisting(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $result = $repo->findById(1);
+        $entity = $result[0];
+        $entity->waistSize = "foo";
+        $repo->persist($entity);
+        $result = $repo->findById(1);
+        $this->assertEquals("foo", $result[0]->waistSize);
+    }
+
+    // public function testDeleteExisting(): void {}
+
+    // public function testDeleteNonExisting(): void {}
 
 }

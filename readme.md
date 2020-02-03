@@ -61,7 +61,7 @@ I've put in place a GNU Make set of commands to ease tasks such as running and t
 
 ### Initial setup
 
-Run `make all` will perform the following actions:
+Run `make all` from the root of this repo. The command will perform the following actions:
 
 - Build two custom docker images based on an ubuntu distro, with PHP 7.4 and Apache: `befeni/server:1` and `befeni/server:1-development` \
 The only difference between both is the presence of PHPUnit on the development image.
@@ -97,10 +97,10 @@ Remove every docker container and docker image created for this project
 
 #### Running inmutable disposable containers
 
-Production:\
+Production version:\
 `docker run --rm -p 80:80/tcp befeni/server:1`
 
-Development:\
+Development version:\
 `docker run --rm -p 80:80/tcp befeni/server:1-development`
 
 #### Running PHPUnit tests
@@ -119,3 +119,12 @@ With that in mind I wrote both docker images as inmutable. Every requirement to 
 Development image only differs with the production version on the way `composer install` its executed. The first one includes dev required vendors (only PHPUnit to be more precise), while the production version run `composer install` with production flags and creates a class map to provide autoloading of vendors in O(1) order.
 
 I choose `befeni/` namespace for tagging docker images. You could potentially upload those images to a befeni dockerhub account to ease others the task of trying this solution.
+
+#### Low hanging fruit enhancements to the designed solution
+
+In real life I usually choose to adopt well docummented, stable, existing open source solutions, than writing all these by myself, but if I should imagine that this is a real life project that should have been implemented by myself as a hard requirement, then this is a short list of enhancements I would suggest to add to the project roadmap. It's all opex related, but all the points are aiming at easing the maintainment of the app.
+
+- Implement PSR-4 complain autoloading instead of using require_once everywhere
+- Instead of defining the data repository as a singleton, a better solution would be to reuse an existing Dependency injection container and use that as a service provider for that kind of classes.
+- Write database oriented implementations of IDataSourceAdapter interface by designing a DatabaseConfiguration class that could be injected to their constructors
+- I would rewrite automated tests to not depend one on each other

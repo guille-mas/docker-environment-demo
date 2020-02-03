@@ -10,18 +10,19 @@ require_once(__DIR__."/IDataSourceAdapter.interface.php");
  */
 class InMemoryDataSourceAdapter implements IDataSourceAdapter
 {
-    private $inMemoryDb = [];
-
-
-    public function __construct(array $mockDb = []) {
-        $this->inMemoryDb = $mockDb;
-    }
+    /**
+     * in memory storage for mocking data while testing
+     */
+    private array $inMemoryDb = [];
 
     /**
-     * Return a string id to identify the data source
+     * The string identifier for the data source instance
      */
-    function getId(): string {
-        return self::class;
+    private ?string $id = null;
+
+    public function __construct(string $id, array $mockDb = []) {
+        $this->inMemoryDb = $mockDb;
+        $this->id = $id;
     }
 
     /**
@@ -36,6 +37,13 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
      */
     function disconnect() {
         // we wont do nothing here cause this data source is defined in memory
+    }
+
+    /**
+     * Return a string id to identify the data source
+     */
+    function getId(): string {
+        return $this->id;
     }
 
     /**
@@ -98,6 +106,10 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
         return $row['id'];
     }
 
+    function getDB(): array {
+        return $this->inMemoryDb;
+    }
+
     /**
      * Given an id value
      * should delete from the data store
@@ -105,15 +117,12 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
      */
     function delete(string $collection, int $id): void {
         if(is_array($this->inMemoryDb[$collection])) {
-            $idxToDelete = null;
-            foreach($this->inMemoryDb[$collection] as $idx => $row) {
+            foreach($this->inMemoryDb[$collection] as $idx => &$row) {
                 if($row['id'] === $id) {
-                    $idxToDelete = $idx;
-                    break;
+                    unset($row);
+                    unset($this->inMemoryDb[$collection][$idx]);
+                    $this->inMemoryDb[$collection] = array_values($this->inMemoryDb[$collection]);
                 }
-            }
-            if($idxToDelete !== null) {
-                array_splice($this->inMemoryDb[$collection], $idx, 1);
             }
         }
     }

@@ -19,7 +19,7 @@ final class ShirtOrderRepositoryTest extends TestCase
     public function testFindAllOnEmptyDataSourceShouldReturnEmptyArray(): void
     {
         $repo = ShirtOrderRepository::getInstance();
-        $repo->addDataSource(new InMemoryDataSourceAdapter());
+        $repo->addDataSource(new InMemoryDataSourceAdapter('source-1'));
         $this->assertTrue(empty($repo->findAll()));
     }
 
@@ -35,7 +35,7 @@ final class ShirtOrderRepositoryTest extends TestCase
         $entity->chestSize = 75;
         $entity->waistSize = 70;
         $row = $repo->mapModelToRow($entity);
-        $repo->addDataSource(new InMemoryDataSourceAdapter([$tableName => [$row]]));
+        $repo->addDataSource(new InMemoryDataSourceAdapter('source-1', [$tableName => [$row]]));
         $results = $repo->findAll();
         $this->assertTrue(count($results) === 1, "result should contain one single element");
         $this->assertEquals($results[0], $entity);
@@ -54,14 +54,14 @@ final class ShirtOrderRepositoryTest extends TestCase
     public function testFindAllShouldReturnEmptyArrayAfterRemovingEveryDataSource(): void {
         $repo = ShirtOrderRepository::getInstance();
         $this->assertTrue(count($repo->findAll()) === 1);
-        $repo->removeDataSource((new InMemoryDataSourceAdapter())->getId());
+        $repo->removeDataSource('source-1');
         $this->assertTrue(count($repo->findAll()) === 0);
     }
 
     public function testPersistNew(): void {
         $repo = ShirtOrderRepository::getInstance();
         $entity = new ShirtOrder();
-        $repo->addDataSource(new InMemoryDataSourceAdapter());
+        $repo->addDataSource(new InMemoryDataSourceAdapter('source-1'));
         $entity->customerId = 222;
         $entity->fabricId = 333;
         $entity->collarSize = 20;
@@ -123,8 +123,8 @@ final class ShirtOrderRepositoryTest extends TestCase
     public function testDeleteExisting(): void {
         $repo = ShirtOrderRepository::getInstance();
         // reset
-        $repo->removeDataSource((new InMemoryDataSourceAdapter())->getId());
-        $repo->addDataSource(new InMemoryDataSourceAdapter());
+        $repo->removeDataSource('source-1');
+        $repo->addDataSource(new InMemoryDataSourceAdapter('source-2'));
         $entity = $repo->create();
         $entity->waistSize = "hola";
         $repo->persist($entity);
@@ -135,6 +135,49 @@ final class ShirtOrderRepositoryTest extends TestCase
         
         $result = $repo->findByWaistSize("foo");
         $this->assertEquals(0, count($result));
+    }
+
+    /**
+     * Insert, Update, and Delete with multiple data sources
+     */
+    public function testPersistToMultipleDataSources(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $tableName = $repo->getModelClass();
+
+        // remove old data sources and create 2 new datasources
+        $repo->removeDataSource('source-2');
+        $ds3 = new InMemoryDataSourceAdapter('source-3');
+        $repo->addDataSource($ds3);
+        $ds4 = new InMemoryDataSourceAdapter('source-4');
+        $repo->addDataSource($ds4);
+
+        // create a new entity and persist it
+        $entity = $repo->create();
+        $entity->waistSize = "some value";
+        $repo->persist($entity);
+
+        // both rows should be the same
+        $this->assertEquals(
+            $ds3->find($tableName, ['waistSize' => "some value"]),
+            $ds4->find($tableName, ['waistSize' => "some value"])
+        );
+
+        $result = $repo->findByWaistSize("some value");
+        $entity = current($result);
+        $entity->waistSize = "foo";
+        $entityId = $repo->persist($entity);
+
+        // update should be present on both data sources
+        $this->assertEquals(
+            $ds3->find($tableName, ['waistSize' => "foo"]),
+            $ds4->find($tableName, ['waistSize' => "foo"])
+        );
+
+        // delete should apply to both data sources
+        $repo->delete($entityId);
+
+        $this->assertEmpty($ds3->find($tableName, ['waistSize' => "foo"]));
+        $this->assertEmpty($ds4->find($tableName, ['waistSize' => "foo"]));
     }
 
 }

@@ -77,7 +77,7 @@ abstract class AbstractRepository implements IDataMapper
     }
 
     public function delete(int $idValue) {
-        foreach($this->dataSources as $k => $ds) {
+        foreach($this->dataSources as $k => &$ds) {
             $ds->delete($this->getModelClass(), $idValue);
         }
     }
@@ -85,16 +85,18 @@ abstract class AbstractRepository implements IDataMapper
     /**
      * 
      */
-    public function persist(object $model) {
+    public function persist(object $model): int{
         // check that given model is supported by the repository
         $instanceClass = get_class($model);
         if($instanceClass != $this->getModelClass()) {
             throw new \Exception("This repository expect instances of model ".$this->getModelClass()."$instanceClass given instead");
         }
         $row = $this->mapModelToRow($model);
+        $id = null;
         foreach ($this->dataSources as $k => $ds) {
-            $ds->persist($this->getModelClass(), $row);
+            $id = $ds->persist($this->getModelClass(), $row);
         }
+        return $id;
     }
 
     /**

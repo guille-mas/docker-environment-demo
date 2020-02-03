@@ -13,6 +13,6 @@ class ShirtOrderRepository extends AbstractRepository {
     use SingletonTrait;
 
     public function getModelClass(): string {
-        return '\Befeni\Model\Entity\ShirtOrder';
+        return 'Befeni\Model\Entity\ShirtOrder';
     }
 }

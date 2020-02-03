@@ -8,7 +8,9 @@ namespace Befeni\Utils;
 trait SingletonTrait {
     private static ?self $instance = null;
 
-    private function __construct(){}
+    private function __construct(){
+        parent::__construct();
+    }
 
     public static function getInstance(): self
     {

@@ -52,8 +52,41 @@ final class ShirtOrderRepositoryTest extends TestCase
 
 
     public function testFindAllShouldReturnEmptyArrayAfterRemovingEveryDataSource(): void {
-        $this->assertTrue(count(ShirtOrderRepository::getInstance()->findAll()) === 1);
-
+        $repo = ShirtOrderRepository::getInstance();
+        $this->assertTrue(count($repo->findAll()) === 1);
+        $repo->removeDataSource((new InMemoryDataSourceAdapter())->getId());
+        $this->assertTrue(count($repo->findAll()) === 0);
     }
+
+    public function testPersistNew(): void {
+        $repo = ShirtOrderRepository::getInstance();
+        $entity = new ShirtOrder();
+        $entity->customerId = 222;
+        $entity->fabricId = 333;
+        $entity->collarSize = 20;
+        $entity->wristSize = 12;
+        $entity->chestSize = 75;
+        $entity->waistSize = 70;
+        $repo->persist($entity);
+        $rows = $repo->findAll();
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals(1, $rows[0]->id);
+    }
+
+
+    /*
+
+    public function testUpdateExisting(): void {}
+
+    public function testSuccessFindById(): void {}
+
+    public function testSuccessFindByCustomerId(): void {}
+
+    public function testSuccessFindByFabricId(): void {}
+
+    public function testEmptyFindById(): void {}
+
+    public function testEmptyFindByWaistSize(): void {}
+    */
 
 }

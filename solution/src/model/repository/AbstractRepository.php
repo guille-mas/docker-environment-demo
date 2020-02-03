@@ -21,16 +21,26 @@ require_once(__DIR__."/IDataMapper.interface.php");
  */
 abstract class AbstractRepository implements IDataMapper
 {
+    
     /**
      * Stores each instance of IDataSourceAdapter
      * indexed by IDataSourceAdapter::getId()
      */
     protected $dataSources = [];
+
+    protected $modelColumns = [];
     
     /**
      * Return the class that represents the model
      */
     abstract function getModelClass(): string;
+
+    protected function __construct()
+    {
+        $modelClass = $this->getModelClass();
+        $this->modelColumns = array_keys((array) new $modelClass());
+    }
+
 
     /**
      * Maps a data row to a model class
@@ -122,9 +132,26 @@ abstract class AbstractRepository implements IDataMapper
      * Used to provide a findBy*($value)
      * @todo: implement
      */
-    public function __call($name, $arguments)
+    public function __call($name, $arguments): array
     {
-        throw new \Exception("calling $name method with arguments");
+        if(strpos($name, 'findBy') === 0) {
+            // findBy($column, $value) magic method
+            $column = lcfirst(ltrim($name, 'findBy'));
+            $modelClass = $this->getModelClass();
+            if(isset($arguments[0]) && in_array($column, $this->modelColumns)) {
+                $valueToFind = $arguments[0] ?? null;
+                // if name exists as an attribute of model class
+                if(empty($this->dataSources)) {
+                    // but no data source is found, return an empty array
+                    return [];
+                } else {
+                    // return the result from find([$column => $value])
+                    return $this->find([$column => $valueToFind]);
+                }
+            }
+        }
+        // else we don't support the method
+        throw new \Exception("Unsupported method ". $name);
     }
 
 }

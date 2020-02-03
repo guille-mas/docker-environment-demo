@@ -12,6 +12,11 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
 {
     private $inMemoryDb = [];
 
+
+    public function __construct(array $mockDb = []) {
+        $this->inMemoryDb = $mockDb;
+    }
+
     /**
      * Return a string id to identify the data source
      */
@@ -46,16 +51,19 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
         if(!count($keyValuePairs)) {
             throw new \Exception('A condition was expected to match against the data set. Empty array provided instead');
         }
-        return array_filter($this->inMemoryDb[$collection], function ($item) use ($keyValuePairs) {
+
+        $filter = function ($item) use ($keyValuePairs) {
             $shouldReturn = true;
-            foreach($keyValuePairs as $key => $value) {
-                if(!isset($item[$key]) || $item[$key] !== $value) {
+            foreach ($keyValuePairs as $key => $value) {
+                if (!isset($item[$key]) || $item[$key] !== $value) {
                     $shouldReturn = false;
                     break;
                 }
             }
             return $shouldReturn;
-        });
+        };
+
+        return  array_filter($this->inMemoryDb[$collection], $filter);
     }
 
     /**
@@ -115,6 +123,6 @@ class InMemoryDataSourceAdapter implements IDataSourceAdapter
      * Return all rows from a given collection
      */
     function findAll(string $collection): array {
-        return $this->inMemoryDb;
+        return $this->inMemoryDb[$collection] ?? [];
     }
 }

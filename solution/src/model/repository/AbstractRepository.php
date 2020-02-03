@@ -47,10 +47,9 @@ abstract class AbstractRepository implements IDataMapper
     /**
      * @see https://ocramius.github.io/blog/fast-php-object-to-array-conversion/
      */
-    protected function mapModelToRow(object $model): array
+    public function mapModelToRow(object $model): array
     {
-        $row = (array) $model;
-        return $row;
+        return (array) $model;
     }
 
     /**
@@ -101,19 +100,22 @@ abstract class AbstractRepository implements IDataMapper
     /**
      * 
      */
-    protected function find(array $colValueArray) {
-        $row = null;
+    public function find(array $colValueArray): array {
+        $rows = [];
         foreach ($this->dataSources as $k => $ds) {
-            $row = $ds->find($colValueArray);
-            if(is_array($row)){
+            $rows = $ds->find($this->getModelClass(), $colValueArray);
+            if(is_array($rows) && !empty($rows)){
+                // found it. no need to look up in another data source
                 break;
             }
         }
-        return $row;
+        return array_map(function ($item) {
+            return $this->mapRowToModel($item);
+        }, $rows);
     }
 
     public function findAll(): array {
-        return count($this->dataSources) ? current($this->dataSource)->findAll() : [];
+        return count($this->dataSources) ? current($this->dataSources)->findAll($this->getModelClass()) : [];
     }
 
     /**
@@ -122,7 +124,7 @@ abstract class AbstractRepository implements IDataMapper
      */
     public function __call($name, $arguments)
     {
-        throw new \Exception("calling $name method with arguments: ".implode(' ', $arguments));
+        throw new \Exception("calling $name method with arguments");
     }
 
 }

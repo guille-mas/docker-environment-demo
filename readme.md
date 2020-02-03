@@ -44,12 +44,16 @@ This is the list of bullets that are covered in this deliverable
 - Requirement #2
   - solution/src/tests/AdvancedTest.php
 - Requirement #3
-- Extra: Used the same docker environment I made for the Basic test
-- Extra: Automated tests for Requirement #3
+- Extras:
+  - Used the same docker environment I made for the Basic test
+  - Automated tests for Requirement #3
+  - AbstractRepository implements a magic method findBy*() that can be used to search by any attribute of the model
 
-### Side note
+### Side notes
 
-I'm in the process of writing my first technical blog. It might be useful to asses my proficiency in areas like frontend development or infrastructure as code. \
+I placed answers to both tests inside the same folder because I wanted to run them on the same docker environment, to ease development, and also ease reviewing everything.
+
+I didn't got enough time during the weekend to write a separated frontend client, but I'm in the process of writing my own technical blog. It might be useful to asses my proficiency in areas like frontend development or infrastructure as code. \
 It lacks real content, but you can see how it is going at https://guille.cloud/ \
 Its code is available for review at https://github.com/guille-mas/blog
 
